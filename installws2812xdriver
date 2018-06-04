@@ -5,25 +5,36 @@ sudo apt-get update
 sudo apt-get install gcc make build-essential python-dev git scons swig
 # The audio output must be deactivated. For this we edit the file
 # Here we add the following line:
+# File may not be there....
+
 sudo echo 'blacklist snd_bcm2835' | cat >> /etc/modprobe.d/snd-blacklist.conf
 
-We also need to edit the configuration file:
-sudo nano /boot/config.txt
-Below are lines with the following content (with Ctrl + W you can search):
+
+# We also need to edit the configuration file:
+# sudo nano /boot/config.txt
+# Below are lines with the following content (with Ctrl + W you can search):
 # Enable audio (loads snd_bcm2835)
-dtparam=audio=on
-This bottom line is commented out with a hashtag # at the beginning of the line: #dtparam=audio=on
-We restart the system
+# dtparam=audio=on
+# This bottom line is commented out with a hashtag # at the beginning of the line: #dtparam=audio=on
+
+sed -i 's/dtparam=audio=on/#dtparam=audio=on/' config.txt
+
+# We restart the system
 sudo reboot
- 
-Now we can download the library.
-git clone https://github.com/jgarff/rpi_ws281x
-In this directory are on the one hand some C files included, which can be easily compiled. The example code for this is easy to understand. In order to use them in Python, we need to compile them:
+
+########################### next file ##############################
+# Now we can download the library.
+git clone https://github.com/louisroehrs/rpi_ws281x
+# In this directory are on the one hand some C files included, which can be easily compiled. The example code for this is easy to understand. In order to use them in Python, we need to compile them:
 cd rpi_ws281x/
 sudo scons
-However, in this tutorial we are mainly interested in the Python variant and therefore switch to the Python folder:
+# However, in this tutorial we are mainly interested in the Python variant and therefore switch to the Python folder:
 cd python
-Here we carry out the installation:
+sudo pip install setuptools --upgrade
+
+# Here we carry out the installation:
 sudo python setup.py build
 sudo python setup.py install
-This will allow us to carry out a first test in the next step.
+
+# Ok, installed.
+# This will allow us to carry out a first test in the next step.
