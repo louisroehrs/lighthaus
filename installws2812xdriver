@@ -5,10 +5,11 @@ sudo apt-get update
 sudo apt-get install gcc make build-essential python-dev git scons swig
 # The audio output must be deactivated. For this we edit the file
 # Here we add the following line:
-# File may not be there....
-
 sudo echo 'blacklist snd_bcm2835' | cat >> /etc/modprobe.d/snd-blacklist.conf
 
+# File may not be there....so just create your own.
+sudo echo 'blacklist snd_bcm2835' | cat >> /etc/modprobe.d/sndbcm2835-blacklist.conf
+# May need to sudo nano /etc/modprobe.d/sndbcm2835-blacklist.conf and add blacklist snd_bcm2835 to it.
 
 # We also need to edit the configuration file:
 # sudo nano /boot/config.txt
@@ -38,3 +39,9 @@ sudo python setup.py install
 
 # Ok, installed.
 # This will allow us to carry out a first test in the next step.
+
+# Test for sound card 
+aplay -l
+
+# "No soundcards found" should be displayed.
+# If soundcards are listed, then blacklisting the onboard sound still needs to happen.
