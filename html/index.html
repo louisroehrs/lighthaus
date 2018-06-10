@@ -1,0 +1,223 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/slider.css">
+<script src="js/jquery.1.11.0.min.js"></script>
+
+<script language=JavaScript>
+
+var service_uuid = 0x2220;
+var receive_uuid = 0x2221;
+var send_uuid=0x2222;
+var disconnect_uuid =0x2223;
+var peripheral = {};
+var arryBufferFour = new ArrayBuffer(4);
+var dataViewFour = new DataView(arryBufferFour);
+
+function onButtonClick() {
+    navigator.bluetooth.requestDevice({
+        acceptAllDevices: true,
+        optionalServices: [service_uuid, send_uuid, receive_uuid, disconnect_uuid]
+    })
+        .then( device => { 
+            console.log(device.name);
+            var output = $('#output').text(device.name + device.id);
+            return device.gatt.connect();
+        })
+        .then(server => {
+  // Getting Battery Service...
+            return server.getPrimaryService(service_uuid);
+        })
+        .then(service => {
+  // Getting Battery Level Characteristic...
+            service.getCharacteristic(send_uuid).then 
+            (characteristic => { 
+                peripheral["send"]= characteristic;
+                var dataToWrite = Uint8Array.from([0x01,0x00,0x00,0x00]);
+                return characteristic.writeValue(dataToWrite);
+
+            }).then ( charpromise => {
+                let x = charpromise;
+            });
+
+            service.getCharacteristic(receive_uuid).then 
+            (characteristic => { 
+                peripheral["receive"] =characteristic;
+            });
+            service.getCharacteristic(disconnect_uuid).then 
+            (characteristic => { 
+                peripheral["disconnect"] =characteristic;
+            });
+
+        })
+        .then(peripheral => {
+            return peripheral;
+        })
+        .catch(error => { console.log(error); });
+
+}
+
+function solidColor (r, g,  b) {
+    var dataToWrite = Uint8Array.from([0x01,r,g,b]);
+    return peripheral["send"].writeValue(dataToWrite);
+}
+
+function shootColor (r, g,  b) {
+    var dataToWrite = Uint8Array.from([0x02,r,g,b]);
+    return peripheral["send"].writeValue(dataToWrite);
+}
+
+
+function blinkColor (r, g,  b) {
+    var dataToWrite = Uint8Array.from([0x03,r,g,b]);
+    return peripheral["send"].writeValue(dataToWrite);
+}
+
+function disconnect () {
+    var dataToWrite = Uint8Array.from(1);
+    console.log("Disconnect sent");
+    var output = $('#output').html("Disconnected");
+    return peripheral["disconnect"].writeValue(dataToWrite);
+
+}
+
+function setpixel (pixel) {
+    var thing = [];
+
+    thing[0] = 0x05;
+    thing[1] = 0xff;
+    thing[2] = 0xff;
+    thing[3] = 0xff;
+    thing[4] = pixel;
+    
+//    var dataToWrite = Uint8Array.from([0x05,0xff,0xff,0xff,pixel]);
+    var dataToWrite = Uint8Array.from(thing);
+    console.log("set pixel sent");
+    return peripheral["send"].writeValue(dataToWrite);
+}
+
+function resetpixel (pixel) {
+    var thing = [];
+
+    thing[0] = 0x05;
+    thing[1] = Math.floor(Math.random()*128);
+    thing[2] = Math.floor(Math.random()*128);
+    thing[3] = Math.floor(Math.random()*128);
+    thing[4] = pixel;
+    
+    var dataToWrite = Uint8Array.from(thing);
+    console.log("reset pixel sent " + [thing[1],thing[2],thing[3]].join(" "));
+    return peripheral["send"].writeValue(dataToWrite);
+}
+
+
+function twinkle(pixel) {
+
+    resetpixel(pixel)
+       .then( thing => { 
+           var x = Math.floor(Math.random()*256);
+           setpixel(x).then( thing => {
+               twinkle(x);
+            //   setTimeout("twinkle("+x+")",Math.floor(Math.random()*500)+100);
+           });
+       });
+}
+
+    
+$(document).ready(function(){
+    $('#hello').click(onButtonClick);
+    $('#blue').click( x => { solidColor(0x00,0x00,0xff)});
+    $('#shoot').click( x => { shootColor(0xff,0x00,0xff)});
+    $('#setpixel').click( x => { twinkle(40)});
+    $('#disconnect').click( x => { disconnect(0xff,0x00,0xff)});
+
+
+    $('#candles').click( x => { doCommand('candles')});
+    $('#chase').click( x => { doCommand('chase')});
+    $('#wipe').click( x => { doCommand('wipe')});
+    $('#off').click( x => { doCommend('off')});
+
+    $('.slider').change ( event => { 
+        var arr = new Uint8Array(4);
+        arr[0]=parseInt($('#redSlider').val());
+        arr[1]=parseInt($('#greenSlider').val());
+        arr[2]=parseInt($('#blueSlider').val());
+        solidColor(arr[0],arr[1],arr[2]);
+    })
+
+//slider.oninput = function() {
+//    output.innerHTML = this.value;
+// }
+});
+
+
+
+</script>
+
+<button id="hello" >Get Stuff</button>
+<button id="blue" >Blue</button>
+<button id="shoot" >Shoot</button>
+<button id="setpixel" >Set Pixel</button>
+<button id="candles">Candles</button><BR>
+<button id="chase">Chase</button><BR>
+<button id="wipe">Wipe</button><BR>
+<button id="off" >Off</button>
+<div class="slidecontainer">
+  <input type="range" min="1" max="255" value="0" class="slider" id="redSlider">
+  <input type="range" min="1" max="255" value="0" class="slider" id="greenSlider">
+  <input type="range" min="1" max="255" value="0" class="slider" id="blueSlider">
+</div>
+<div id=output></div>
+
+<canvas id="myCanvas" width="371" height="370" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+    
+var canvas = document.getElementById('myCanvas');
+var context = canvas.getContext('2d');
+var img = new Image();
+img.src = 'i/spectrum.jpg';
+img.crossOrigin = "Anonymous";
+
+window.onload = function(){
+    context.drawImage(img, 0, 0);
+};
+
+function findPos(obj){
+    var current_left = 0, current_top = 0;
+    if (obj.offsetParent){
+        do{
+            current_left += obj.offsetLeft;
+            current_top += obj.offsetTop;
+        }while(obj = obj.offsetParent);
+        return {x: current_left, y: current_top};
+    }
+    return undefined;
+}
+
+    function rgbToHex(r, g, b){
+    if (r > 255 || g > 255 || b > 255)
+        throw "Invalid color component";
+        return ((r << 16) | (g << 8) | b).toString(16);
+    }
+
+$('#myCanvas').click(function(e){
+    var position = findPos(this);
+    var x = e.pageX - position.x;
+    var y = e.pageY - position.y;
+    var coordinate = "x=" + x + ", y=" + y;
+    var canvas = this.getContext('2d');
+    var p = canvas.getImageData(x, y, 1, 1).data;
+    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+ //   alert("HEX: " + hex);
+    solidColor(p[0],p[1],p[2])
+});
+</script>
+<img src=spectrum.jpg width=1 height=1>
+
+</body>
+
+</html>
+
+
+
