@@ -34,7 +34,7 @@ log
 ess-service.iml
 
 #UI
-/node_modules
+
 /.tmp
 /.sass-cache
 /bower_components

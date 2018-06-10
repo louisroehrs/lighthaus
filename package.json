@@ -12,7 +12,6 @@
   "dependencies": {
     "express": "4.x",
     "json": "9.x",
-    "noble": "1.9.1",
     "npm": "^6.1.0"
   }
 }

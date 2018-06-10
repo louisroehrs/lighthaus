@@ -111,7 +111,6 @@ function resetpixel (pixel) {
 
 
 function twinkle(pixel) {
-
     resetpixel(pixel)
        .then( thing => { 
            var x = Math.floor(Math.random()*256);
@@ -122,6 +121,15 @@ function twinkle(pixel) {
        });
 }
 
+function doCommand(command) {
+    $.get("/lighthaus?command=" + command, 
+          {},
+          function(data,status) {
+              alert(data.message);
+          }
+         );
+}
+
     
 $(document).ready(function(){
     $('#hello').click(onButtonClick);
@@ -129,7 +137,6 @@ $(document).ready(function(){
     $('#shoot').click( x => { shootColor(0xff,0x00,0xff)});
     $('#setpixel').click( x => { twinkle(40)});
     $('#disconnect').click( x => { disconnect(0xff,0x00,0xff)});
-
 
     $('#candles').click( x => { doCommand('candles')});
     $('#chase').click( x => { doCommand('chase')});
@@ -144,9 +151,49 @@ $(document).ready(function(){
         solidColor(arr[0],arr[1],arr[2]);
     })
 
-//slider.oninput = function() {
-//    output.innerHTML = this.value;
-// }
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    var img = new Image();
+    img.src = 'i/spectrum.jpg';
+    img.crossOrigin = "Anonymous";
+    
+    window.onload = function(){
+        context.drawImage(img, 0, 0);
+    };
+    
+    function findPos(obj){
+        var current_left = 0, current_top = 0;
+        if (obj.offsetParent){
+            do{
+                current_left += obj.offsetLeft;
+                current_top += obj.offsetTop;
+            }while(obj = obj.offsetParent);
+            return {x: current_left, y: current_top};
+        }
+        return undefined;
+    }
+    
+    function rgbToHex(r, g, b){
+        if (r > 255 || g > 255 || b > 255)
+            throw "Invalid color component";
+        return ((r << 16) | (g << 8) | b).toString(16);
+    }
+    
+    $('#myCanvas').click(function(e){
+        var position = findPos(this);
+        var x = e.pageX - position.x;
+        var y = e.pageY - position.y;
+        var coordinate = "x=" + x + ", y=" + y;
+        var canvas = this.getContext('2d');
+        var p = canvas.getImageData(x, y, 1, 1).data;
+        var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+        //   alert("HEX: " + hex);
+        solidColor(p[0],p[1],p[2])
+    });
+    
+    //slider.oninput = function() {
+    //    output.innerHTML = this.value;
+    // }
 });
 
 
@@ -173,45 +220,6 @@ Your browser does not support the canvas element.
 </canvas>
 <script type="text/javascript">
     
-var canvas = document.getElementById('myCanvas');
-var context = canvas.getContext('2d');
-var img = new Image();
-img.src = 'i/spectrum.jpg';
-img.crossOrigin = "Anonymous";
-
-window.onload = function(){
-    context.drawImage(img, 0, 0);
-};
-
-function findPos(obj){
-    var current_left = 0, current_top = 0;
-    if (obj.offsetParent){
-        do{
-            current_left += obj.offsetLeft;
-            current_top += obj.offsetTop;
-        }while(obj = obj.offsetParent);
-        return {x: current_left, y: current_top};
-    }
-    return undefined;
-}
-
-    function rgbToHex(r, g, b){
-    if (r > 255 || g > 255 || b > 255)
-        throw "Invalid color component";
-        return ((r << 16) | (g << 8) | b).toString(16);
-    }
-
-$('#myCanvas').click(function(e){
-    var position = findPos(this);
-    var x = e.pageX - position.x;
-    var y = e.pageY - position.y;
-    var coordinate = "x=" + x + ", y=" + y;
-    var canvas = this.getContext('2d');
-    var p = canvas.getImageData(x, y, 1, 1).data;
-    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
- //   alert("HEX: " + hex);
-    solidColor(p[0],p[1],p[2])
-});
 </script>
 <img src=spectrum.jpg width=1 height=1>
 
