@@ -52,7 +52,7 @@ sys.puts("Server up at " + app.get('env.HOSTNAME') + " on " + HOST +":" +PORT);
 sys.puts("Go to http://" + HOST +":"+PORT +" to view lighthaus page.");
 				    
 app.use("/lighthaus", bodyParser(), function (req,res) {
-    lighthausCommand = req.query.command;
+    command = req.query.command;
     console.log("lighthaus " + command);
     fs.writeFileSync(LIGHTHAUS_COMMAND_FILE, command, {"encoding":"utf8"});
     res.type('json').status(200).json({"message":"Command accepted","command":command });
