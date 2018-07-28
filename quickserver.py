@@ -12,12 +12,11 @@ while True:
     conn, addr = s.accept()
     f = open('/home/pi/rpi_ws281x/python/command.txt', 'wb')
     print "Got connection from", addr
-    print "Receiving..."
     l = conn.recv(1024)
     while (l):
         print "Receiving Data..."
+        print l
         f.write(l)
         l = conn.recv(1024)
-        print "Done Receiving"
     f.close()
     conn.close()
