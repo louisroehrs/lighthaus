@@ -1,9 +1,9 @@
 {
-  "name": "lightweb.js",
+  "name": "lighthaus.js",
   "version": "0.0.1",
-  "description": "LightWeb",
+  "description": "LightHaus",
   "scripts": {
-    "start": "node lightweb.js"
+    "start": "node lighthaus.js"
   },
   "main": "server.js",
   "author": "Louis F. Roehrs",
@@ -12,9 +12,10 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "4.x",
+    "https": "^1.0.0",
     "json": "9.x",
     "lodash": "^4.17.5",
-    "npm": "^6.1.0",
+    "npm": "^6.4.1",
     "shelljs": "^0.8.2"
   }
 }

@@ -13,11 +13,13 @@ var sys = require("sys")
 , util = require("util")
 , url = require("url")
 , http = require("http")
+, https = require("https")
 , qs = require("querystring")
 , bodyParser = require("body-parser")
 , express = require("express")
 ;
 
+// NEED TLS FOR CHROME TO ENABLE navigator.bluetooth
 
 var logs=[];
     
@@ -44,13 +46,18 @@ function logMemoryUsage(msg) {
 
 var app=express();
 
+https.createServer({
+      key: fs.readFileSync('key.pem'),
+      cert: fs.readFileSync('cert.pem')
+    }, app).listen(14443);
 
 app.use(express.static(__dirname+ '/html'));  // What this does and no one will tell you is that requests to /index.html will return the files in the html/ directory on the server.
 
 app.listen(Number(process.env.PORT || PORT), HOST);
 
 sys.puts("Server up at " + app.get('env.HOSTNAME') + " on " + HOST +":" +PORT);
-sys.puts("Go to http://" + HOST +":"+PORT +" to view lighthaus page.");
+sys.puts("Go to https://" + HOST +":14443 to view lighthaus page.");
+sys.puts("Secure https needed for google chrome and navigator.bluetooth");
 				    
 app.use("/lighthaus", bodyParser(), function (req,res) {
     command = req.query.command;
