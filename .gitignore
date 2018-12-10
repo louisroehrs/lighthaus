@@ -1,7 +1,7 @@
 # temp
 ess-config-solrcloud
 ess-config.zip
-
+nohup.out
 
 # Emacs editor
 *.*~
@@ -40,6 +40,7 @@ ess-service.iml
 /bower_components
 **/config.codekit
 src/main/resources/root/config.codekit
+node_modules
 
 # big data
 demoassets

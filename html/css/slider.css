@@ -2,6 +2,7 @@
     -webkit-appearance: none;
     width: 100%;
     height: 15px;
+    margin-bottom:10px;
     border-radius: 5px;   
     background: #d3d3d3;
     outline: none;
@@ -26,4 +27,14 @@
     border-radius: 50%;
     background: #4CAF50;
     cursor: pointer;
+}
+
+.sliderred::-webkit-slider-thumb {
+    background: red;
+}
+.slidergreen::-webkit-slider-thumb {
+    background: green;
+}
+.sliderblue::-webkit-slider-thumb {
+    background: blue;
 }

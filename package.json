@@ -10,8 +10,11 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "4.x",
     "json": "9.x",
-    "npm": "^6.1.0"
+    "lodash": "^4.17.5",
+    "npm": "^6.1.0",
+    "shelljs": "^0.8.2"
   }
 }
