@@ -3,11 +3,12 @@ HOST = process.env.HOST || 'localhost'; // localhost
 PORT = process.env.PORT || 14000;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-//LIGHTHAUS_COMMAND_FILE = '/home/pi/rpi_ws281x/python/command.txt'
+LIGHTHAUS_COMMAND_FILE = '/home/pi/rpi_ws281x/python/command.txt'
 
-LIGHTHAUS_COMMAND_FILE = './command.txt'
+//LIGHTHAUS_COMMAND_FILE = './command.txt'
 
 var sys = require("sys")
+, shell = require('shelljs')
 , fs = require("fs")
 , util = require("util")
 , url = require("url")
@@ -53,8 +54,12 @@ sys.puts("Go to http://" + HOST +":"+PORT +" to view lighthaus page.");
 				    
 app.use("/lighthaus", bodyParser(), function (req,res) {
     command = req.query.command;
-    console.log("lighthaus " + command);
-    fs.writeFileSync(LIGHTHAUS_COMMAND_FILE, command, {"encoding":"utf8"});
+    console.log (command);
+    console.log (LIGHTHAUS_COMMAND_FILE);
+    cmd = "echo '" + command + "' > " +LIGHTHAUS_COMMAND_FILE;
+    console.log(cmd);
+    shell.exec(cmd, {silent:true});
+//    fs.writeFileSync(LIGHTHAUS_COMMAND_FILE +"\n", command, {"encoding":"utf8"});
     res.type('json').status(200).json({"message":"Command accepted","command":command });
 });
 				
