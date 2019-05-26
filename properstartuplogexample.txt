@@ -1,0 +1,7 @@
+Server up at undefined on localhost:14000
+Go to https://localhost:14443 to view lighthaus page.
+Secure https needed for google chrome and navigator.bluetooth
+Tue, 11 Dec 2018 02:32:25 GMT body-parser deprecated bodyParser: use individual json/urlencoded middlewares at lighthaus.js:63:23
+Tue, 11 Dec 2018 02:32:25 GMT body-parser deprecated undefined extended: provide extended option at node_modules/body-parser/index.js:105:29
+(node:6887) DeprecationWarning: sys is deprecated. Use util instead.
+(node:6887) DeprecationWarning: util.puts is deprecated. Use console.log instead.

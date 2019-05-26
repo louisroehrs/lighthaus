@@ -51,6 +51,7 @@ https.createServer({
       cert: fs.readFileSync('cert.pem')
     }, app).listen(14443);
 
+
 app.use(express.static(__dirname+ '/html'));  // What this does and no one will tell you is that requests to /index.html will return the files in the html/ directory on the server.
 
 app.listen(Number(process.env.PORT || PORT), HOST);
