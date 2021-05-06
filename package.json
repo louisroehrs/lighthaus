@@ -13,7 +13,7 @@
     "body-parser": "^1.18.3",
     "express": "4.x",
     "https": "^1.0.0",
-    "json": "9.x",
+    "json": "10.x",
     "lodash": "^4.17.5",
     "npm": "^6.4.1",
     "shelljs": "^0.8.2"
