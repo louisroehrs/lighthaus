@@ -10,7 +10,7 @@
   "license": "MIT",
   "repository": {},
   "dependencies": {
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "express": "4.x",
     "https": "^1.0.0",
     "json": "9.x",
